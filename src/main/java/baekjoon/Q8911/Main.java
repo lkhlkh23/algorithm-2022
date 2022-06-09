@@ -1,6 +1,9 @@
 package baekjoon.Q8911;
 
+import java.util.Calendar;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class Main {
 
@@ -8,102 +11,74 @@ public class Main {
         final Scanner scanner = new Scanner(System.in);
         final int t = Integer.parseInt(scanner.nextLine());
         for (int i = 0; i < t; i++) {
-            final char[] commands = scanner.nextLine().toCharArray();
-            final Turtle turtle = new Turtle();
-            for (final char command : commands) {
-                turtle.inputCommand(command);
+            final Stack<Turtle> turtles = new Stack<>();
+            turtles.add(new Turtle(0, 0, 0));
+            for (final char command : scanner.nextLine().toCharArray()) {
+                turtles.add(turtles.peek().copyFrom().applyCommand(command));
             }
-            System.out.println(turtle.calculate());
+
+            int px = 0;
+            int py = 0;
+            int mx = 0;
+            int my = 0;
+            while(!turtles.isEmpty()) {
+                final Turtle turtle = turtles.pop();
+                px = Math.max(px, turtle.x);
+                py = Math.max(py, turtle.y);
+                mx = Math.min(mx, turtle.x);
+                my = Math.min(my, turtle.y);
+            }
+
+            System.out.println((px + Math.abs(mx)) * (py + Math.abs(my)));
         }
     }
 
     private static class Turtle {
 
-        private int currentX;
-        private int currentY;
+        private int x;
+        private int y;
         private int direction; // 0 : N, 1 : E, 2 : S, 3 : W
-        private int minusX;
-        private int plusX;
-        private int minusY;
-        private int plusY;
 
-        public void inputCommand(final char command) {
-            switch (command) {
-                case 'F' :
-                    forward();
-                    break;
-                case 'B' :
-                    back();
-                    break;
-                case 'L' :
-                    left();
-                    break;
-                case 'R' :
-                    right();
-                    break;
-            }
+        public Turtle(final int currentX, final int currentY, final int direction) {
+            this.x = currentX;
+            this.y = currentY;
+            this.direction = direction;
         }
 
-        public void forward() {
+        public Turtle copyFrom(){
+            return new Turtle(this.x, this.y, this.direction);
+        }
+
+        public Turtle applyCommand(final char command) {
+            if(List.of('F', 'B').contains(command)) {
+                return move(command == 'F');
+            }
+
+            return rotate(command == 'L');
+        }
+
+        private Turtle move(boolean isForward) {
             switch (direction) {
                 case 0 :
-                    this.currentY += 1;
-                    this.plusY = Math.max(this.plusY, this.currentY);
-                    break;
+                    this.y = this.y + (isForward ? 1 : -1);
+                    return this;
                 case 1 :
-                    this.currentX += 1;
-                    this.plusX = Math.max(this.plusX, this.currentX);
-                    break;
+                    this.x = this.x + (isForward ? 1 : -1);
+                    return this;
                 case 2 :
-                    this.currentY -= 1;
-                    this.minusY = Math.min(this.minusY, this.currentY);
-                    break;
-                case 3 :
-                    this.currentX -= 1;
-                    this.minusX = Math.min(this.minusX, this.currentX);
-                    break;
+                    this.y = this.y + (isForward ? -1 : 1);
+                    return this;
+                default:
+                    this.x = this.x + (isForward ? -1 : 1);
+                    return this;
             }
         }
 
-        public void back() {
-            switch (direction) {
-                case 0 :
-                    this.currentY -= 1;
-                    this.minusY = Math.min(this.minusY, currentY);
-                    break;
-                case 1 :
-                    this.currentX -= 1;
-                    this.minusX = Math.min(this.minusX, this.currentX);
-                    break;
-                case 2 :
-                    this.currentY += 1;
-                    this.plusY = Math.max(this.plusY, this.currentY);
-                    break;
-                case 3 :
-                    this.currentX += 1;
-                    this.plusX = Math.max(this.plusX, this.currentX);
-                    break;
-            }
-        }
+        private Turtle rotate(final boolean isLeft) {
+            this.direction = this.direction + (isLeft ? -1 : 1);
+            this.direction = this.direction == -1 ? 3 : this.direction == 4 ? 0 : this.direction;
 
-        public void left() {
-            if(direction == 0) {
-                this.direction = 3;
-            } else {
-                this.direction -= 1;
-            }
-        }
-
-        public void right() {
-            if(direction == 3) {
-                this.direction = 0;
-            } else {
-                this.direction += 1;
-            }
-        }
-
-        public int calculate() {
-            return (Math.abs(this.minusX) + this.plusX) * (Math.abs((this.minusY) + this.plusY));
+            return this;
         }
 
     }
