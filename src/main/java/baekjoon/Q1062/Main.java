@@ -2,8 +2,10 @@ package baekjoon.Q1062;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
 
@@ -18,27 +20,31 @@ public class Main {
             return;
         }
 
-        final List<String> subset = new ArrayList<>();
+        final List<String> restWords = new ArrayList<>();
         final List<String> words = new ArrayList<>();
         for (int i = 0; i < Integer.parseInt(first[0]); i++) {
-            final String word = scanner.nextLine();
-            for (String s : word.substring(4, word.length() - 4).split("")) {
-                if(!must.contains(s) && !subset.contains(s)) {
-                    subset.add(s);
+            final String word = scanner.nextLine()
+                                       .replaceAll("a", "")
+                                       .replaceAll("n", "")
+                                       .replaceAll("t", "")
+                                       .replaceAll("i", "")
+                                       .replaceAll("c", "");
+            for (final String letter : word.split("")) {
+                if(!restWords.contains(letter)) {
+                    restWords.add(letter);
                 }
             }
+
             words.add(word);
         }
 
-        final List<String> result = new ArrayList<>();
-        combination(subset, new boolean[subset.size()], 0, rest, result);
+        final List<String> subsets = new ArrayList<>();
+        combination(restWords, new boolean[restWords.size()], 0, rest, subsets);
         int max = 0;
-        for (final String s : result) {
-            final List<String> letters = new ArrayList<>(List.of(s.split("")));
-            letters.addAll(must);
+        for (final String subset : subsets) {
             int hit = 0;
             for (final String word : words) {
-                hit = Arrays.stream(word.split("")).allMatch(letters::contains) ? hit + 1 : hit;
+                // hit = subset.matches("(.*)" + wo)
             }
             max = Math.max(max, hit);
         }
