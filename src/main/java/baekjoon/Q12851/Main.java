@@ -8,6 +8,7 @@ import java.util.Stack;
 
 public class Main {
 
+    // not completed
     // 시간초과
 
     public static void main(String[] args) {
