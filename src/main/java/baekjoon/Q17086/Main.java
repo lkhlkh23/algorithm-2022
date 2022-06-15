@@ -1,13 +1,16 @@
 package baekjoon.Q17086;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Main {
 
-    // not completed
+    // not completed (BFS)
 
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
@@ -20,53 +23,102 @@ public class Main {
             }
         }
 
+        /*for (int j = 0; j < maps.length; j++) {
+            for (int k = 0; k < maps[0].length; k++) {
+                System.out.print(maps[j][k] + "  ");
+            }
+            System.out.println();
+        }*/
+
         int max = -1;
-        for (int i = 2; i < 3; i++) {
+        for (int i = 0; i < maps[0].length; i++) {
+            final int[][] result = init(maps[0].length, maps.length);
             final boolean[][] visited = new boolean[maps.length][maps[0].length];
-            final List<Count> counts = new ArrayList<>();
-            find(maps, visited, i, 0, new Count(0), counts, true);
-            counts.forEach(c -> System.out.println(c.cnt + "!!!!"));
-            final int min = counts.stream().mapToInt(c -> c.cnt).min().getAsInt();
-            //System.out.println(min + "~~~");
-            max = Math.max(max, min);
+            bfs(maps, visited, result, new Point(i, 0));
+
+            int min = Integer.MAX_VALUE;
+            for (int j = 0; j < maps.length; j++) {
+                for (int k = 0; k < maps[0].length; k++) {
+                    if(j == 0 && k == i) {
+                        continue;
+                    }
+                    if(maps[j][k] == 1) {
+                        min = Math.min(result[j][k], min);
+                       //  System.out.println(min + "@@@");
+                    }
+                }
+            }
+
+            /*System.out.println("----------------------------------------");
+            for (int[] ints : result) {
+                for (int anInt : ints) {
+                    System.out.print(anInt);
+                }
+                System.out.println();
+            }
+            System.out.println("----------------------------------------");*/
+            //System.out.println(min + "~~");
+            max = Math.max(min, max);
         }
 
         System.out.println(max);
     }
 
-    private static void find(final int[][] maps, final boolean[][] visited, final int x, final int y, final Count count, final List<Count> counts, final boolean isFirst) {
-        if(x < 0 || x >= maps[0].length || y < 0 || y >= maps.length) {
-            return;
+    private static int[][] init(final int xSize, final int ySize) {
+        final int[][] result = new int[ySize][xSize];
+        for (int i = 0; i < ySize; i++) {
+            for (int j = 0; j < xSize; j++) {
+                result[i][j] = Integer.MAX_VALUE;
+            }
         }
 
-        if(visited[y][x]) {
-            return;
-        }
-
-        if(maps[y][x] == 1 && !isFirst) {
-            counts.add(count);
-            return;
-        }
-
-        visited[y][x] = true;
-
-        find(maps, visited, x - 1, y - 1, new Count(count.cnt + 1), counts, false);
-        find(maps, visited, x, y - 1, new Count(count.cnt + 1), counts, false);
-        find(maps, visited, x + 1, y - 1, new Count(count.cnt + 1), counts, false);
-        find(maps, visited, x - 1, y, new Count(count.cnt + 1), counts, false);
-        find(maps, visited, x + 1, y, new Count(count.cnt + 1), counts, false);
-        find(maps, visited, x - 1, y + 1, new Count(count.cnt + 1), counts, false);
-        find(maps, visited, x, y + 1, new Count(count.cnt + 1), counts, false);
-        find(maps, visited, x + 1, y + 1, new Count(count.cnt + 1), counts, false);
+        return result;
     }
 
-    private static class Count {
+    // visited 필요
+    private static void bfs(final int[][] maps, final boolean[][] visited, final int[][] result, final Point point) {
+        final Queue<Point> queue = new LinkedList<>();
+        final Queue<Point> temp = new LinkedList<>();
+        queue.add(point);
 
-        private int cnt;
+        int len = 0;
+        while(!queue.isEmpty()) {
+            final Point poll = queue.poll();
+            if(!(poll.x < 0 || poll.x >= maps[0].length || poll.y < 0 || poll.y >= maps.length)) {
+                if(visited[poll.y][poll.x]) {
+                    continue;
+                }
 
-        public Count(final int cnt) {
-            this.cnt = cnt;
+                visited[poll.y][poll.x] = true;
+                result[poll.y][poll.x] = Math.min(len, result[poll.y][poll.x]);
+                temp.offer(new Point(poll.x - 1, poll.y - 1));
+                temp.offer(new Point(poll.x, poll.y - 1));
+                temp.offer(new Point(poll.x + 1, poll.y - 1));
+                temp.offer(new Point(poll.x - 1, poll.y));
+                temp.offer(new Point(poll.x + 1, poll.y));
+                temp.offer(new Point(poll.x - 1, poll.y + 1));
+                temp.offer(new Point(poll.x, poll.y + 1));
+                temp.offer(new Point(poll.x + 1, poll.y + 1));
+            }
+
+            if(queue.isEmpty()) {
+                queue.addAll(temp);
+                temp.clear();
+                len++;
+            }
         }
+    }
+
+    private static class Point {
+
+        private int x;
+        private int y;
+
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
     }
 
 }
