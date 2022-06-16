@@ -1,6 +1,8 @@
 package baekjoon.Q17086;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -9,29 +11,28 @@ public class Main {
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
         final String[] firstLine = scanner.nextLine().split(" ");
-        final int[][] maps = new int[Integer.parseInt(firstLine[0])][Integer.parseInt(firstLine[1])];
+        final boolean[][] maps = new boolean[Integer.parseInt(firstLine[0])][Integer.parseInt(firstLine[1])];
+        final List<Point> points = new ArrayList<>();
         for (int i = 0; i < maps.length; i++) {
             final String[] inputs = scanner.nextLine().split(" ");
             for (int j = 0; j < inputs.length; j++) {
-                maps[i][j] = Integer.parseInt(inputs[j]);
+                maps[i][j] = "1".equals(inputs[j]);
+                if(!maps[i][j]) {
+                    points.add(new Point(j, i));
+                }
             }
         }
 
         int max = 0;
-        for (int i = 0; i < maps.length; i++) {
-            for (int j = 0; j < maps[0].length ; j++) {
-                if(maps[i][j] == 0) {
-                    final boolean[][] visited = new boolean[maps.length][maps[0].length];
-                    final int result = bfs(maps, visited, new Point(j, i));
-                    max = Math.max(result, max);
-                }
-            }
+        for (final Point point : points) {
+            max = Math.max(bfs(maps, point), max);
         }
 
         System.out.println(max);
     }
 
-    private static int bfs(final int[][] maps, final boolean[][] visited, final Point point) {
+    private static int bfs(final boolean[][] maps, final Point point) {
+        final boolean[][] visited = new boolean[maps.length][maps[0].length];
         final Queue<Point> queue = new LinkedList<>();
         final Queue<Point> temp = new LinkedList<>();
         queue.add(point);
@@ -44,7 +45,7 @@ public class Main {
                     continue;
                 }
 
-                if(maps[poll.y][poll.x] == 1) {
+                if(maps[poll.y][poll.x]) {
                     return len;
                 }
 
