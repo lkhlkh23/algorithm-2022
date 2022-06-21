@@ -1,8 +1,9 @@
 package baekjoon.Q2294;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class Main {
@@ -10,29 +11,51 @@ public class Main {
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
         final String[] firstLine = scanner.nextLine().split(" ");
+        final int n = Integer.parseInt(firstLine[0]);
+        final int k = Integer.parseInt(firstLine[1]);
         final List<Integer> coins = new ArrayList<>();
-        for (int i = 0; i < Integer.parseInt(firstLine[0]); i++) {
+        for (int i = 0; i < n; i++) {
             coins.add(Integer.parseInt(scanner.nextLine()));
         }
 
-        final int[] nums = init(Integer.parseInt(firstLine[1]), coins);
-        // 100001, 1, 2, 3, 4, 1, 6, 7, 8, 9, 2, 11, 1, 13, 14, 3,
-        for (int i = 1; i < nums.length; i++) {
-
-        }
-
+        System.out.println(bfs(k, coins));
     }
 
-    private static int[] init(final int size, final List<Integer> coins) {
-        final int[] nums = new int[size + 1];
-        Arrays.fill(nums, 100001);
-
-        for (final Integer coin : coins) {
-            for (int i = 1; i <= ((nums.length - 1) / coin); i++) {
-                nums[coin * i] = Math.min(nums[coin * i], i);
+    private static int bfs(final int k, final List<Integer> coins) {
+        final Queue<Integer> queue = new LinkedList<>();
+        final Queue<Integer> temps = new LinkedList<>();
+        final boolean[] visited = new boolean[k + 1];
+        for (final int coin : coins) {
+            if(coin <= k) {
+                queue.add(coin);
+                visited[coin] = true;
             }
         }
 
-        return nums;
+        int cnt = 1;
+        while (!queue.isEmpty()) {
+            final int poll = queue.poll();
+            for (final int coin : coins) {
+                temps.offer(poll + coin);
+            }
+
+            if(queue.isEmpty()) {
+                while(!temps.isEmpty()) {
+                    final int temp = temps.poll();
+                    if(temp == k) {
+                        return cnt + 1;
+                    }
+                    if(temp > k || visited[temp]) {
+                        continue;
+                    }
+                    visited[temp] = true;
+                    queue.offer(temp);
+                }
+                cnt++;
+            }
+        }
+
+        return -1;
     }
+
 }

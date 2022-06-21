@@ -6,8 +6,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    // not completed
-
     public static void main(String[] args) {
         System.out.println(bfs(Integer.parseInt(new Scanner(System.in).nextLine())));
     }
