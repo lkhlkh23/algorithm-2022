@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    // completed (목)
-
     public static void main(String[] args) {
         final long[] nos = new long[1000000 + 1];
         nos[1] = 1;
