@@ -1,82 +1,34 @@
 package baekjoon.Q11058;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Main {
 
-    // not completed (월)
-    // https://www.acmicpc.net/problem/11058
-    // bfs - 메모리 초과
-
     public static void main(String[] args) {
-        final int n = Integer.parseInt(new Scanner(System.in).nextLine());
-        System.out.println(bfs(n));
+        System.out.println(dp(Integer.parseInt(new Scanner(System.in).nextLine())));
     }
 
-    public static int bfs(final int n) {
-        final Set<Board> visited = new HashSet<>();
-        final Queue<Board> boards = new LinkedList<>();
-        boards.offer(new Board(1, 0, 0, 1));
+    public static long dp(final int n) {
+        final long[] count = new long[100 + 1];
+        for (int i = 1; i <= 6; i++) {
+            count[i] = i;
+        }
 
-        int max = -1;
-        while (!boards.isEmpty()) {
-            final Board board = boards.poll();
-            if(board.count == n) {
-                max = Math.max(max, board.screen);
-            }
-
-            if(board.count > n) {
-                continue;
-            }
-
-            if(visited.contains(board)) {
-                continue;
-            }
-
-            visited.add(board);
-
-            if(board.buffer < 1) {
-                boards.offer(new Board(board.screen + 1, 0, board.buffer, board.count + 1)); // print
-            }
-            if(board.screen > board.buffer && board.count < (n - 1)) {
-                boards.offer(new Board(board.screen, board.screen, 0, board.count + 1)); // ctrl A
-            }
-            if(board.selected > 0 && board.selected > board.buffer && board.count < n) {
-                boards.offer(new Board(board.screen, board.selected, board.selected, board.count + 1)); // ctrl C
-            }
-            if(board.buffer > 1) {
-                boards.offer(new Board(board.screen + board.buffer, 0, board.buffer, board.count + 1)); // ctrl V
+        for (int i = 7; i < count.length; i++) {
+            // count[7] = count[4] + count[4] * 1 = 8
+            // count[7] = count[3] + count[3] * 2 = 9
+            // count[7] = count[2] + count[2] * 3 = 8
+            // count[7] = count[1] + count[1] * 4 = 5
+            // count[i] = count[i - (2 + j)] * (j + 1)
+            for (int j = 1; j <= i - 3; j++) {
+                count[i] = Math.max(count[i], count[j] + count[j] * (i - (j + 2)));
             }
         }
 
-        System.out.println(visited.size());
-
-        return max;
+        return count[n];
     }
 
-    private static class Board {
-
-        private int screen;
-        private int selected;
-        private int buffer;
-        private int count;
-
-        public Board(final int screen, final int selected, final int buffer, final int count) {
-            this.screen = screen;
-            this.selected = selected;
-            this.buffer = buffer;
-            this.count = count;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            final Board board = (Board) o;
-            return screen == board.screen && selected == board.selected && buffer == board.buffer;
-        }
-
-    }
 }
+
+
+
