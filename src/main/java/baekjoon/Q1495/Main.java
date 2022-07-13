@@ -8,10 +8,6 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    // not completed
-    // https://www.acmicpc.net/problem/1495
-    // dsf (메모리 초과)
-
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
         final String[] first = scanner.nextLine().split(" ");
@@ -30,10 +26,12 @@ public class Main {
         stack.add(new Volume(0, start + volumes.get(0)));
         stack.add(new Volume(0, start - volumes.get(0)));
 
+        final boolean[][] visited = new boolean[volumes.size() + 1][max + 1];
+
         int maxVolume = -1;
         while (!stack.isEmpty()) {
             final Volume volume = stack.pop();
-            if(volume.size > max || volume.size < 0) {
+            if(volume.size > max || volume.size < 0 || visited[volume.index][volume.size]) {
                 continue;
             }
 
@@ -42,6 +40,7 @@ public class Main {
                 continue;
             }
 
+            visited[volume.index][volume.size] = true;
             stack.push(new Volume(volume.index + 1, volume.size + volumes.get(volume.index + 1)));
             stack.push(new Volume(volume.index + 1, volume.size - volumes.get(volume.index + 1)));
         }
