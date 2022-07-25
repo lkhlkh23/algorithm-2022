@@ -1,34 +1,48 @@
 package baekjoon.Q11004;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class Main {
 
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
-        final int k = Integer.parseInt(scanner.nextLine().split(" ")[1]);
-        final String[] inputs = scanner.nextLine().split(" ");
+        int k = Integer.parseInt(scanner.nextLine().split(" ")[1]);
+        final List<Integer> nos = Arrays.stream(scanner.nextLine().split(" "))
+                                        .map(Integer::parseInt)
+                                        .collect(Collectors.toList());
+
         final int[] arr = new int[1000000000 + 1];
-        for (final String input : inputs) {
-            final int no = Integer.parseInt(input);
-            arr[no]++;
+        for (final int no : nos) {
+            if(no < 0) {
+                arr[no * -1]++;
+            }
         }
 
-        int sum = 0;
-        for (int i = 1; i < arr.length; i++) {
-            sum += arr[i];
-            if(sum >= k) {
+        for (int i = arr.length - 1; i > 0; i--) {
+            k -= arr[i];
+            arr[i] = 0;
+            if(k <= 0) {
                 System.out.println(i);
-                break;
+                return;
+            }
+        }
+
+        for (final int no : nos) {
+            if(no > 0) {
+                arr[no]++;
+            }
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            k -= arr[i];
+            if(k <= 0) {
+                System.out.println(i);
+                return;
             }
         }
     }
-
 
 }
