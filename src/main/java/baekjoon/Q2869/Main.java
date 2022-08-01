@@ -1,29 +1,24 @@
 package baekjoon.Q2869;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 
-    // not completed 시간초과
+    public static void main(String[] args) throws IOException {
+        final StringTokenizer st = new StringTokenizer(new BufferedReader(new InputStreamReader(System.in)).readLine(), " ");
+        final int a = Integer.parseInt(st.nextToken());
+        final int b = Integer.parseInt(st.nextToken());
+        final int v = Integer.parseInt(st.nextToken());
 
-    public static void main(String[] args) {
-        final String[] inputs = new Scanner(System.in).nextLine().split(" ");
-        final int a = Integer.parseInt(inputs[0]);
-        final int b = Integer.parseInt(inputs[1]);
-        final int v = Integer.parseInt(inputs[2]);
-
-        int start = (v / (a- b)) - 2;
-        int current = start * (a - b);
-        while(true) {
-            current += a;
-            start++;
-            if(current >= v) {
-                break;
-            }
-            current -= b;
+        int day = (v - b) / (a - b);
+        if ((v - b) % (a - b) != 0) {
+            day++;
         }
 
-        System.out.println(start);
+        System.out.println(day);
     }
 
 }
