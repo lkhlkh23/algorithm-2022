@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    // completed (금)
-
     public static void main(String[] args) {
         final int n = Integer.parseInt(new Scanner(System.in).nextLine());
         int cnt = 1;
@@ -19,4 +17,5 @@ public class Main {
 
         System.out.println(no);
     }
+
 }
