@@ -1,51 +1,42 @@
 package baekjoon.Q18258;
 
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
 
 public class Main {
 
-    // not completed (시간초과)
-
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
         final int n = Integer.parseInt(scanner.nextLine());
-        final Queue<Integer> queue = new LinkedList<>();
-        final Queue<Integer> temp = new LinkedList<>();
+        final StringBuilder sb = new StringBuilder();
+        final int[] queue = new int[n + 1];
+        int start = 0;
+        int end = 0;
+        int size = 0;
         for (int i = 0; i < n; i++) {
             final String input = scanner.nextLine();
-            if(input.startsWith("push")) {
-                queue.add(Integer.parseInt(input.split(" ")[1]));
-            }
-
-            if(input.startsWith("pop")) {
-                System.out.println(queue.isEmpty() ? -1 : queue.poll());
-            }
-
-            if(input.startsWith("size")) {
-                System.out.println(queue.size());
-            }
-
-            if(input.startsWith("empty")) {
-                System.out.println(queue.isEmpty() ? 1 : 0);
-            }
-
-            if(input.startsWith("front")) {
-                System.out.println(queue.isEmpty() ? -1 : queue.peek());
-            }
-
-            if(input.startsWith("back")) {
-                int poll = -1;
-                while(!queue.isEmpty()) {
-                    poll = queue.poll();
-                    temp.add(poll);
+            if("pop".equals(input)) {
+                if(size == 0) {
+                    sb.append(-1).append("\n");
+                } else {
+                    sb.append(queue[start++]).append("\n");
+                    size--;
                 }
-                queue.addAll(temp);
-                temp.clear();
-
-                System.out.println(poll);
+            } else if("size".equals(input)) {
+                sb.append(size).append("\n");
+            } else if("empty".equals(input)) {
+                sb.append(size == 0 ? 1 : 0).append("\n");
+            } else if("front".equals(input)) {
+                sb.append(size == 0 ? -1 : queue[start]).append("\n");
+            } else if("back".equals(input)) {
+                sb.append(size == 0 ? -1 : queue[end - 1]).append("\n");
+            } else {
+                queue[end++] = Integer.parseInt(input.split(" ")[1]);
+                size++;
             }
         }
+
+        System.out.println(sb.toString());
     }
+
 }
+
