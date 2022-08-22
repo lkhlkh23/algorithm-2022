@@ -1,13 +1,12 @@
 package baekjoon.Q1062;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Main {
+
+    // not completed
 
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);

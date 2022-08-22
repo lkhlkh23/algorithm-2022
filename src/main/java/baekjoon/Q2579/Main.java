@@ -12,7 +12,7 @@ import java.util.Set;
 public class Main {
 
     // not completed (메모리 초과) (bfs) (월)
-    // 메모리제이션으로 다시 풀이 필요!
+    // 메모리제이션으로 다시 풀이 필요! 
 
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);

@@ -9,21 +9,21 @@ import java.util.Scanner;
 
 public class Main {
 
+    // not completed
+
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
         final int n = scanner.nextInt();
-        final Queue<Integer> queue = new PriorityQueue<>();
+        final Queue<Integer> first = new PriorityQueue<>();
+        final Queue<Integer> second = new PriorityQueue<>();
+        int maxInFirst = -1;
         for (int i = 0; i < n; i++) {
-            queue.add(scanner.nextInt());
             if(i <= 1) {
-                System.out.println(queue.peek());
+                final int num = scanner.nextInt();
+                first.add(scanner.nextInt());
+                System.out.println(first.peek());
             } else {
-                final List<Integer> temp = new ArrayList<>();
-                for (int j = 0; j <= i / 2; j++) {
-                    temp.add(queue.poll());
-                }
-                System.out.println(temp.get(temp.size() - 1));
-                queue.addAll(temp);
+
             }
         }
     }
