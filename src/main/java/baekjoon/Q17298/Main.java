@@ -1,56 +1,42 @@
 package baekjoon.Q17298;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class Main {
-
-    // not completed (시간초과)
-    // https://velog.io/@jkh9615/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EB%B0%B1%EC%A4%80-17298-%EC%98%A4%ED%81%B0%EC%88%98-Java
 
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
         final int n = Integer.parseInt(scanner.nextLine());
         final String[] inputs = scanner.nextLine().split(" ");
-        final Queue<Integer> queue = new LinkedList<>();
-        final int[] temp = new int[inputs.length];
-        for (int i = 0; i < inputs.length; i++) {
-            queue.add(Integer.parseInt(inputs[i]));
-            temp[i] = Integer.parseInt(inputs[i]);
-        }
-
-        final int[] results = new int[inputs.length];
-        for (int i = 0; i < results.length; i++) {
-            final int target = temp[i];
-            if(i > 0 && target < results[i - 1]) {
-                results[i] = results[i - 1];
+        final Stack<Integer> stack = new Stack<>();
+        final Stack<Integer> temp = new Stack<>();
+        for (int i = inputs.length - 1; i >= 0; i--) {
+            final int num = Integer.parseInt(inputs[i]);
+            if(stack.isEmpty()) {
+                stack.push(-1);
+                temp.push(num);
                 continue;
             }
-            int poll = -1;
-            while(!queue.isEmpty()) {
-                poll = queue.poll();
-                if(poll > target) {
+
+            int pop = -1;
+            while ((pop = temp.peek()) <= num) {
+                temp.pop();
+                if(temp.isEmpty()) {
+                    pop = -1;
                     break;
                 }
             }
-            results[i] = poll;
+            stack.push(pop);
+            temp.push(num);
         }
 
-        for (int result : results) {
-            System.out.print(result + " ");
+        final StringBuilder sb = new StringBuilder();
+        while (!stack.isEmpty()) {
+            sb.append(stack.pop()).append(" ");
         }
-    }
 
-    private static class No {
-        private int num;
-        private int index;
-
-        public No(int num, int index) {
-            this.num = num;
-            this.index = index;
-        }
+        System.out.println(sb.toString());
     }
 
 }
